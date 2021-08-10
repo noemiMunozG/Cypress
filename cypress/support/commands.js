@@ -26,10 +26,7 @@
 
 
 //My custimized command
-Cypress.Commands.add('login', (email, password) => {
-    cy.visit('https://admin-demo.nopcommerce.com/login?ReturnUrl=%2Fadmin%2F')
-
-    cy.get('input[name=Email]').clear().type(email)
-    cy.get('input[name=Password]').type(password)
-    cy.get('button[type=submit]').click()
+Cypress.Commands.add('visitSite', () => {
+    cy.visit('https://staging.app.walopay.com/')
+    cy.title().should('be.equal', 'WaloPay - Login')
 })
