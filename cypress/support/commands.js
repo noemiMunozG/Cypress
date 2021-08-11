@@ -30,3 +30,18 @@ Cypress.Commands.add('visitSite', () => {
     cy.visit('https://staging.app.walopay.com/')
     cy.title().should('be.equal', 'WaloPay - Login')
 })
+
+Cypress.Commands.add('login', () =>{
+    const emailField = cy.get('[id=email-input]')
+    emailField.clear()
+    emailField.type('noemi+w01@agavelab.com')
+
+    const passField = cy.get('[id=password-input]')
+    passField.clear()
+    passField.type('Password.123')
+    
+    const button = cy.get('button[type=submit]')
+    button.click()
+    
+    cy.title().should('be.equal', 'WaloPay')
+})

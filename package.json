@@ -10,6 +10,15 @@
   "author": "noemi",
   "license": "ISC",
   "devDependencies": {
-    "cypress": "^8.0.0"
+    "cypress": "^8.0.0",
+    "eslint-plugin-cypress": "^2.11.3"
+  },
+  "eslintConfig": {
+    "env": {
+      "cypress/globals": true
+    },
+    "plugins": [
+      "cypress"
+    ] 
   }
 }
