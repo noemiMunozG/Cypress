@@ -33,9 +33,13 @@ describe('Crear Transacción', () => {
         productInput.click().type("Nombre del producto")
     })
 
-    it('Paso 1 - Precio - menor a 1', function() {
+    it('Paso 1 - Precio', function() {
         const productInput = cy.get('input#price-input')
         productInput.clear()
         productInput.click().type("500")
+    })
+
+    it('Paso 1 - Continuar', function() {
+        cy.get('[type=button]').last().click()
     })
 })
