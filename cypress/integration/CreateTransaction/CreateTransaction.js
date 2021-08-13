@@ -2,6 +2,9 @@
 
 describe('Crear Transacción', () => {
     let user = null
+    const price = 5000
+    const emailNewClient = 'noemi+c01@agavelab.com'
+    const emailClient = 'noemi+w02@agavelab.com'
 
     before(() => {
         cy.visitSite()
@@ -15,7 +18,7 @@ describe('Crear Transacción', () => {
         cy.get('h4.styles_form__title__td1JA').contains('Crear transacción')
     })
 
-    it('Paso 1 - Vendedor', function() {
+    it.skip('Paso 1 - Vendedor', function() {
         const sellerCheck = cy.get('input[value=SELLER]').should('not.be.checked')
         const buyerCheck = cy.get('input[value=BUYER]').should('not.be.checked')
         cy.get('label#label-undefined').first().click()
@@ -24,7 +27,7 @@ describe('Crear Transacción', () => {
         user = "seller"
     })
 
-    it.skip('Paso 1 - Comprador', function() {
+    it('Paso 1 - Comprador', function() {
         const sellerCheck = cy.get('input[value=SELLER]').should('not.be.checked')
         const buyerCheck = cy.get('input[value=BUYER]').should('not.be.checked')
         cy.get('label#label-undefined').last().click()
@@ -41,10 +44,11 @@ describe('Crear Transacción', () => {
     it('Paso 1 - Precio', function() {
         const productInput = cy.get('input#price-input')
         productInput.clear()
-        productInput.click().type("500")
+        productInput.click().type(price)
     })
 
     it('Paso 1 - Continuar', function() {
+        cy.pause(5000)
         cy.get('[type=button]').last().click()
         cy.get('h4.styles_form__title__td1JA').contains('Modelo de pago')
     })
@@ -94,7 +98,7 @@ describe('Crear Transacción', () => {
     //------------------------------
 
     it.skip('Paso 3 - Invitar contraparte - sin mensaje - usuario existente', function() {
-        cy.get('input#email-input').click().type('noemi+w02@agavelab.com')
+        cy.get('input#email-input').click().type(emailClient)
         cy.get('textarea[name=message]').clear()
         cy.get('[type=button]').last().click()
 
@@ -102,7 +106,7 @@ describe('Crear Transacción', () => {
     })
 
     it.skip('Paso 3 - Invitar contraparte - sin mensaje - usuario nuevo', function() {
-        cy.get('input#email-input').click().type('noemi+c01@agavelab.com')
+        cy.get('input#email-input').click().type(emailNewClient)
         cy.get('textarea[name=message]').clear()
         cy.get('[type=button]').last().click()
 
@@ -110,7 +114,7 @@ describe('Crear Transacción', () => {
     })
 
     it.skip('Paso 3 - Invitar contraparte - con mensaje - usuario existente', function() {
-        cy.get('input#email-input').click().type('noemi+w02@agavelab.com')
+        cy.get('input#email-input').click().type(emailClient)
         cy.get('textarea[name=message]').clear().type('Test de mensaje para la contraparte')
         cy.get('[type=button]').last().click()
 
@@ -118,10 +122,27 @@ describe('Crear Transacción', () => {
     })
 
     it('Paso 3 - Invitar contraparte - con mensaje - usuario nuevo', function() {
-        cy.get('input#email-input').click().type('noemi+c01@agavelab.com')
+        cy.get('input#email-input').click().type(emailNewClient)
         cy.get('textarea[name=message]').clear().type('Test de mensaje para la contraparte')
         cy.get('[type=button]').last().click()
 
         cy.get('h4.styles_form__title__td1JA').contains('Resumen de la transacción')
+    })
+
+    //------------------------------
+
+    it('Paso 3 - summary', function() {
+        if (user === "seller") {
+            cy.get('p.styles_form__data__2TLBc').first().contains('Vendedor')
+            cy.get('p:nth-child(4)').eq(1).contains('Estás vendiendo')
+        } else {
+            cy.get('p.styles_form__data__2TLBc').first().contains('Comprador')
+            cy.get('p:nth-child(4)').contains('Estás comprando')
+        }
+
+        cy.get('p.styles_form__data__2TLBc').eq(2).contains(price)
+        cy.get('p.styles_form__data__2TLBc').eq(4).contains(emailNewClient || emailClient)
+
+        //cy.get('[type=button]').last().click()
     })
 })
