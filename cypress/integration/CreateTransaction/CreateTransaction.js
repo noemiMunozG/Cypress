@@ -7,12 +7,20 @@ describe('Crear Transacción', () => {
     const emailClient = 'noemi+w02@agavelab.com'
 
     before(() => {
-        cy.visitSite()
-
         cy.login()
+        cy.visitSite()
+        cy.saveLocalStorage();
     })
 
-    it('Poder crear tranasaccion', function() {
+    beforeEach(() => {
+        cy.restoreLocalStorage();
+      });
+      
+      afterEach(() => {
+        cy.saveLocalStorage();
+      });
+
+    it('Poder crear transaccion', function() {
         cy.get('button.button_btn__1MDcm').click()
         cy.title().should('eq', 'WaloPay - Crear Transacción')
         cy.get('h4.styles_form__title__td1JA').contains('Crear transacción')
@@ -48,14 +56,13 @@ describe('Crear Transacción', () => {
     })
 
     it('Paso 1 - Continuar', function() {
-        cy.pause(5000)
         cy.get('[type=button]').last().click()
         cy.get('h4.styles_form__title__td1JA').contains('Modelo de pago')
     })
 
     //------------------------------
 
-    it.skip('Paso 2 - Seleccionar modelo de pago - Vendedor', function() {
+    it('Paso 2 - Seleccionar modelo de pago - Vendedor', function() {
         const sellerCheck = cy.get('input[value=SELLER]').should('not.be.checked')
         const buyerCheck = cy.get('input[value=BUYER]').should('not.be.checked')
         const bothCheck = cy.get('input[value=BOTH]').should('not.be.checked')
@@ -75,7 +82,7 @@ describe('Crear Transacción', () => {
         buyerCheck.get('input[value=BOTH]').should('not.be.checked')
     })
 
-    it('Paso 2 - Seleccionar modelo de pago - Ambos', function() {
+    it.skip('Paso 2 - Seleccionar modelo de pago - Ambos', function() {
         const sellerCheck = cy.get('input[value=SELLER]').should('not.be.checked')
         const buyerCheck = cy.get('input[value=BUYER]').should('not.be.checked')
         const bothCheck = cy.get('input[value=BOTH]').should('not.be.checked')
@@ -97,7 +104,7 @@ describe('Crear Transacción', () => {
 
     //------------------------------
 
-    it.skip('Paso 3 - Invitar contraparte - sin mensaje - usuario existente', function() {
+    it('Paso 3 - Invitar contraparte - sin mensaje - usuario existente', function() {
         cy.get('input#email-input').click().type(emailClient)
         cy.get('textarea[name=message]').clear()
         cy.get('[type=button]').last().click()
@@ -121,7 +128,7 @@ describe('Crear Transacción', () => {
         cy.get('h4.styles_form__title__td1JA').contains('Resumen de la transacción')
     })
 
-    it('Paso 3 - Invitar contraparte - con mensaje - usuario nuevo', function() {
+    it.skip('Paso 3 - Invitar contraparte - con mensaje - usuario nuevo', function() {
         cy.get('input#email-input').click().type(emailNewClient)
         cy.get('textarea[name=message]').clear().type('Test de mensaje para la contraparte')
         cy.get('[type=button]').last().click()
@@ -140,8 +147,18 @@ describe('Crear Transacción', () => {
             cy.get('p:nth-child(4)').contains('Estás comprando')
         }
 
-        cy.get('p.styles_form__data__2TLBc').eq(2).contains(price)
-        cy.get('p.styles_form__data__2TLBc').eq(4).contains(emailNewClient || emailClient)
+
+        cy.get('p.styles_form__data__2TLBc').eq(2).invoke('text').then((thePrice) => {
+            let trimedPrice = thePrice.replace('$', "").replace(',', "")
+            cy.log(thePrice)
+            thePrice.contains(price)
+        })
+
+        //text.replace('$', "").replace(',', "")
+        //cy.log(text)
+
+        //cy.get('p.styles_form__data__2TLBc').contains(price)
+        //cy.get('p.styles_form__data__2TLBc').eq(4).contains(emailNewClient || emailClient)
 
         //cy.get('[type=button]').last().click()
     })

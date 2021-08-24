@@ -24,24 +24,47 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
+let LOCAL_STORAGE_MEMORY = {};
 
 //My custimized command
 Cypress.Commands.add('visitSite', () => {
     cy.visit('https://staging.app.walopay.com/')
-    cy.title().should('be.equal', 'WaloPay - Login')
 })
 
 Cypress.Commands.add('login', () =>{
-    const emailField = cy.get('[id=email-input]')
-    emailField.clear()
-    emailField.type('noemi+w01@agavelab.com')
-
-    const passField = cy.get('[id=password-input]')
-    passField.clear()
-    passField.type('Password.123')
-    
-    const button = cy.get('button[type=submit]')
-    button.click()
-    
-    cy.title().should('be.equal', 'WaloPay')
+    cy.request({
+        method: 'POST',
+        url: 'https://stagingapi.app.walopay.com/api/v1/graphql', 
+        body: {
+          operationName: 'login',
+          query: 'mutation login($input: LoginInput!) {  login(input: $input) {    token    __typename  }}',
+          variables: { input: { email: 'noemi+w02@agavelab.com', password: "Password.123" } }
+        }
+      })
+        .then((response) => {
+          console.log('*****************BODY******************', response);
+          localStorage.setItem('token', response.body.data.login.token);
+        })
 })
+
+Cypress.Commands.add("saveLocalStorage", () => {
+  Object.keys(localStorage).forEach(key => {
+    LOCAL_STORAGE_MEMORY[key] = localStorage[key];
+  });
+});
+
+Cypress.Commands.add("restoreLocalStorage", () => {
+  Object.keys(LOCAL_STORAGE_MEMORY).forEach(key => {
+    localStorage.setItem(key, LOCAL_STORAGE_MEMORY[key]);
+  });
+});
+
+function formatString(text) {
+    return text.replace('$', '').replace(',','').trim();
+}
+
+Cypress.Commands.add('currency', (selector) => {
+      cy.get(selector)
+        .invoke('text')
+        .then(formatString)
+    });
