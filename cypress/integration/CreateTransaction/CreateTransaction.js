@@ -2,7 +2,7 @@
 
 describe('Crear Transacción', () => {
     let user = null
-    const price = 5000
+    const price = '3500.76'
     const emailNewClient = 'noemi+c01@agavelab.com'
     const emailClient = 'noemi+w02@agavelab.com'
 
@@ -104,7 +104,7 @@ describe('Crear Transacción', () => {
 
     //------------------------------
 
-    it('Paso 3 - Invitar contraparte - sin mensaje - usuario existente', function() {
+    it.skip('Paso 3 - Invitar contraparte - sin mensaje - usuario existente', function() {
         cy.get('input#email-input').click().type(emailClient)
         cy.get('textarea[name=message]').clear()
         cy.get('[type=button]').last().click()
@@ -112,7 +112,7 @@ describe('Crear Transacción', () => {
         cy.get('h4.styles_form__title__td1JA').contains('Resumen de la transacción')
     })
 
-    it.skip('Paso 3 - Invitar contraparte - sin mensaje - usuario nuevo', function() {
+    it('Paso 3 - Invitar contraparte - sin mensaje - usuario nuevo', function() {
         cy.get('input#email-input').click().type(emailNewClient)
         cy.get('textarea[name=message]').clear()
         cy.get('[type=button]').last().click()
@@ -150,15 +150,16 @@ describe('Crear Transacción', () => {
 
         cy.get('p.styles_form__data__2TLBc').eq(2).invoke('text').then((thePrice) => {
             let trimedPrice = thePrice.replace('$', "").replace(',', "")
-            cy.log(thePrice)
-            thePrice.contains(price)
+            cy.log(trimedPrice)
+            expect(trimedPrice).contains(price)
         })
 
-        //text.replace('$', "").replace(',', "")
-        //cy.log(text)
-
-        //cy.get('p.styles_form__data__2TLBc').contains(price)
-        //cy.get('p.styles_form__data__2TLBc').eq(4).contains(emailNewClient || emailClient)
+        cy.get('p.styles_form__data__2TLBc').eq(4).each(x => {
+            expect(x.text()).to.be.oneOf([
+                emailNewClient,
+                emailClient
+            ])
+          })
 
         //cy.get('[type=button]').last().click()
     })
