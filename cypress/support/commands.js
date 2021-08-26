@@ -42,9 +42,25 @@ Cypress.Commands.add('login', () =>{
         }
       })
         .then((response) => {
-          console.log('*****************BODY******************', response);
           localStorage.setItem('token', response.body.data.login.token);
         })
+})
+
+Cypress.Commands.add('getFee', (price) => {
+    cy.request({
+        method: 'POST',
+        url: 'https://stagingapi.app.walopay.com/api/v1/graphql',
+        body: {
+            operationName: 'calculateFare',
+            query: 'query calculateFare($input: CalculateFareInput!) {\n  calculateFare(input: $input) {\n    fee\n    __typename\n  }\n}\n',
+            variables: { input: {price : Number(price)}}
+          },
+        headers: {
+            authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+    }).then((response) => {
+        return response.body.data.calculateFare.fee
+    })
 })
 
 Cypress.Commands.add("saveLocalStorage", () => {
