@@ -26,7 +26,7 @@ describe('Crear Transacción', () => {
         cy.get('h4.styles_form__title__td1JA').contains('Crear transacción')
     })
 
-    it('Paso 1 - Vendedor', function() {
+    it.skip('Paso 1 - Vendedor', function() {
         const sellerCheck = cy.get('input[value=SELLER]').should('not.be.checked')
         const buyerCheck = cy.get('input[value=BUYER]').should('not.be.checked')
         cy.get('#label-seller').click()
@@ -35,10 +35,10 @@ describe('Crear Transacción', () => {
         user = "seller"
     })
 
-    it.skip('Paso 1 - Comprador', function() {
+    it('Paso 1 - Comprador', function() {
         const sellerCheck = cy.get('input[value=SELLER]').should('not.be.checked')
         const buyerCheck = cy.get('input[value=BUYER]').should('not.be.checked')
-        cy.get('label-buyer').click()
+        cy.get('#label-buyer').click()
         sellerCheck.get('input[value=SELLER]').should('not.be.checked')
         buyerCheck.get('input[value=BUYER]').should('be.checked')
         user = "buyer"
@@ -147,7 +147,7 @@ describe('Crear Transacción', () => {
     it('Paso 3 - summary', function() {
         if (user === "seller") {
             cy.get('p.styles_form__data__2TLBc').first().contains('Vendedor')
-            cy.get('p:nth-child(4)').eq(1).contains('Estás vendiendo')
+            cy.get('p.styles_form__info__jYTOm').eq(1).contains('Estás vendiendo')
         } else {
             cy.get('p.styles_form__data__2TLBc').first().contains('Comprador')
             cy.get('p:nth-child(4)').contains('Estás comprando')
